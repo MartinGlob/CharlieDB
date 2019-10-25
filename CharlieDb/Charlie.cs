@@ -85,6 +85,7 @@ namespace CharlieDb
                 case PropertyHandler.AsJson:
                     sqlType = $"NVARCHAR(max)";
                     nullType = "NULL";
+                    comment = $" -- JSON Representation for class {rp.ElementTypeName}";
                     break;
                 default:
                     throw new Exception($"MapToSql failed for {rp.ColumnName}. No handler defined");
@@ -146,10 +147,10 @@ namespace CharlieDb
                 sb.AppendLine($"create table {rc.SqlTableName}");
                 sb.AppendLine("(");
 
-                if (rc._IdProperty != null)
-                {
-                    sb.AppendLine(MapToSql(rc._IdProperty));
-                }
+                //if (rc._IdProperty != null)
+                //{
+                //    sb.AppendLine(MapToSql(rc._IdProperty));
+                //}
 
                 foreach (var col in rc.Properties)
                 {

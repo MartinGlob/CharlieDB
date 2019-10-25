@@ -14,24 +14,36 @@ namespace ConsoleTest
 
     class Program
     {
+        private const string ConnectionString = "Data Source=MGLPC\\SQLEXPRESS;Initial Catalog=cdb;Integrated Security=True";
+
         static void Main(string[] args)
+        {
+            DoExampleA();
+
+            Console.ReadLine();
+            return;
+        }
+
+        private static void DoExampleA()
         {
             var c = new Charlie();
 
-            c.Register<Asset>()
-                .IdProperty(nameof(Asset.Id))
-                .Ignore(nameof(Asset.Name));
-
-            c.Register<Identifier>()
-                .IdProperty(nameof(Identifier.Id));
+            c.Register<Band>()
+                .IdProperty(nameof(Band.Id));
 
             var sql = c.GenerateCreateSqlScript();
 
 
-            using (var con = new SqlConnection("Data Source=MGLPC\\SQLEXPRESS;Initial Catalog=cdb;Integrated Security=True"))
+            using (var con = new SqlConnection(ConnectionString))
             {
 
                 con.Open();
+
+                var band = CreateTestData();
+
+                var id = c.Insert(con,band);
+
+                var b = c.Get<Band>(con,id);
 
                 //var pi = c.Get<Pilot>(con, 2);
 
@@ -55,34 +67,58 @@ namespace ConsoleTest
 
 
             }
+        }
 
-            Console.ReadLine();
-            return;
+        private static Band CreateTestData()
+        {
+            var band = new Band
+            {
+                Name = "Beatles",
+            };
+
+            band.Concerts.Add(new Concert()
+            {
+                When = new DateTime(1970,1,1),
+                Where = "Manchester",
+
+            });
+
+            band.Tags.Add("A","Value A");
+            band.Tags.Add("B", "Value B");
+            band.Tags.Add("C", "Value C");
+
+            band.Concerts.Add(new Concert()
+            {
+                When = new DateTime(1970, 2, 1),
+                Where = "Berlin"
+            });
+
+            return band;
         }
     }
 
-   
-    public class Asset
+
+    public class Band
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public List<Identifier> Identifiers { get; set; }
+        public List<Concert> Concerts { get; set; }
+        public Dictionary<string,string> Tags { get; set; }
+
+        public Band()
+        {
+            Concerts = new List<Concert>();
+            Tags = new Dictionary<string, string>();
+        }
     }
 
-    public enum IdentifierSource
+    public class Concert
     {
-        ISIN,
-        Bloomberg,
-        Moodys
+        //public int Id { get; set; }
+        public int BandId { get; set; }
+        public DateTime? When { get; set; }
+        public string Where { get; set; }
     }
-
-    public class Identifier 
-    {
-        public int Id { get; set; }
-        public string Value { get; set; }
-        public IdentifierSource IdentifierSource { get; set; }
-    }
-
 
 
 }

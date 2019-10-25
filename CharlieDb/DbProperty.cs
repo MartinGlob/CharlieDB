@@ -34,6 +34,7 @@ namespace CharlieDb
                 dp.PropertyType = PropertyType.IsList;
                 DecodeElementType(pi.PropertyType.GenericTypeArguments[0], dp);
                 dp.T = pi.PropertyType;
+                dp.Handler = PropertyHandler.AsJson;
             }
             else
             {
