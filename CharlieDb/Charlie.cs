@@ -147,10 +147,10 @@ namespace CharlieDb
                 sb.AppendLine($"create table {rc.SqlTableName}");
                 sb.AppendLine("(");
 
-                //if (rc._IdProperty != null)
-                //{
-                //    sb.AppendLine(MapToSql(rc._IdProperty));
-                //}
+                if (rc._IdProperty != null)
+                {
+                    sb.AppendLine(MapToSql(rc._IdProperty));
+                }
 
                 foreach (var col in rc.Properties)
                 {

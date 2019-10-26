@@ -66,8 +66,11 @@ namespace CharlieDb
 
             if (idx == -1)
                 throw new ArgumentException($"Property {propertyName} not found in class {ClassType.Name}");
+
             this._IdProperty = Properties[idx];
-            Properties[idx].IsID = true;
+            this._IdProperty.IsID = true;
+
+            Properties.RemoveAt(idx);
             return this;
         }
 
