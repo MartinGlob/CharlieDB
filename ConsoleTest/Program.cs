@@ -42,12 +42,13 @@ namespace ConsoleTest
                 var n = c.DeleteAll<Band>(con);
 
                 var band = CreateTestData("Beatles", new [] {("1961-01-08", "Liverpool"),("1961-03-27", "Hamburg"),("1964-12-24","London")});
-                c.Insert(con,band);
+                var b1 =c.Insert(con,band);
 
                 band = CreateTestData("Rolling Stones", new[] { ("1966-04-5", "Copenhagen"), ("1966-09-23", "London"), ("1973-09-28", "Munich") });
-                c.Insert(con, band);
+                var b2= c.Insert(con, band);
 
-                //var b = c.Get<Band>(con,id);
+                var b = c.Get<Band>(con,b1);
+                b = c.Get<Band>(con, b2);
 
                 //var pi = c.Get<Pilot>(con, 2);
 
