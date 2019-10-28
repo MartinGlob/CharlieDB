@@ -39,11 +39,15 @@ namespace ConsoleTest
 
                 con.Open();
 
-                var band = CreateTestData();
+                var n = c.DeleteAll<Band>(con);
 
-                var id = c.Insert(con,band);
+                var band = CreateTestData("Beatles", new [] {("1961-01-08", "Liverpool"),("1961-03-27", "Hamburg"),("1964-12-24","London")});
+                c.Insert(con,band);
 
-                var b = c.Get<Band>(con,id);
+                band = CreateTestData("Rolling Stones", new[] { ("1966-04-5", "Copenhagen"), ("1966-09-23", "London"), ("1973-09-28", "Munich") });
+                c.Insert(con, band);
+
+                //var b = c.Get<Band>(con,id);
 
                 //var pi = c.Get<Pilot>(con, 2);
 
@@ -69,29 +73,13 @@ namespace ConsoleTest
             }
         }
 
-        private static Band CreateTestData()
+        private static Band CreateTestData(string name, IEnumerable<(string a, string b)> concerts)
         {
             var band = new Band
             {
-                Name = "Beatles",
+                Name = name,
+                Concerts = concerts.Select(c => new Concert() { When = DateTime.Parse(c.a), Where = c.b }).ToList()
             };
-
-            band.Concerts.Add(new Concert()
-            {
-                When = new DateTime(1970,1,1),
-                Where = "Manchester",
-
-            });
-
-            band.Tags.Add("A","Value A");
-            band.Tags.Add("B", "Value B");
-            band.Tags.Add("C", "Value C");
-
-            band.Concerts.Add(new Concert()
-            {
-                When = new DateTime(1970, 2, 1),
-                Where = "Berlin"
-            });
 
             return band;
         }

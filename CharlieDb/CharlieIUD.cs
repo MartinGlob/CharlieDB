@@ -71,6 +71,18 @@ namespace CharlieDb
                     throw new ArgumentOutOfRangeException();
             }
         }
+
+        public int DeleteAll<T>(SqlConnection connection)
+        {
+            var rc = GetRegisteredType<T>();
+            using (var sqlCmd = new SqlCommand(rc.SqlInsert, connection))
+            {
+                SqlCommand cmd = new SqlCommand($"DELETE FROM {rc.SqlTableName}", connection);
+                var n = cmd.ExecuteNonQuery();
+                return n;
+            }
+        }
+
         public int Insert<T>(SqlConnection connection, T data)
         {
             var rc = GetRegisteredType<T>();
