@@ -50,36 +50,16 @@ namespace ConsoleTest
                 var b = c.Get<Band>(con,b1);
                 b = c.Get<Band>(con, b2);
 
-                //var pi = c.Get<Pilot>(con, 2);
-
-                //var p = new Pilot
-                //{
-                //    Name = "Martin Glob",
-                //    ShortName = "MAG",
-                //    Born = new DateTime(1964,12,08),
-                //    CertificateIssued = new DateTime(1992,02,01)
-                //};
-                //var x = new Flights {BlockTimeInMin = 89, FromAirport = "EKRK", ToAirport = "EKEB"};
-                //p.Flights.Add(x);
-                //p.Flights.Add(x);
-                //p.Flights.Add(new Flights { BlockTimeInMin = 90, FromAirport = "EKEB", ToAirport = "EKYT" });
-
-                //var json = JsonConvert.SerializeObject(p.Flights);
-
-                //p.Flights = JsonConvert.DeserializeObject<List<Flights>>(json);
-
-                //var id = c.Insert(con, p);
-
 
             }
         }
 
-        private static Band CreateTestData(string name, IEnumerable<(string a, string b)> concerts)
+        private static Band CreateTestData(string name, IEnumerable<(string when, string where)> concerts)
         {
             var band = new Band
             {
                 Name = name,
-                Concerts = concerts.Select(c => new Concert() { When = DateTime.Parse(c.a), Where = c.b }).ToList()
+                Concerts = concerts.Select(c => new Concert() { When = DateTime.Parse(c.when), Where = c.where}).ToList()
             };
 
             return band;

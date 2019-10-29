@@ -72,8 +72,17 @@ namespace CharlieDb
             }
         }
 
+        /// <summary>
+        /// Deletes all record from the table specified in the registration of class T
+        /// </summary>
+        /// <typeparam name="T">A class previously registered using Register<T>()</typeparam>
+        /// <param name="connection">An open SqlConnection</param>
+        /// <returns>Number of records deleted</returns>
         public int DeleteAll<T>(SqlConnection connection)
         {
+            if (connection == null) throw new ArgumentNullException(nameof(connection));
+            if (connection.State != ConnectionState.Open) throw new Exception("CharlieDb: connection not open");
+
             var rc = GetRegisteredType<T>();
             using (var sqlCmd = new SqlCommand(rc.SqlInsert, connection))
             {
@@ -134,7 +143,7 @@ namespace CharlieDb
             }
         }
 
-        public void Update<T>(SqlConnection conn, T data)
+        public void Update<T>(SqlConnection conn, T data, SqlTransaction transaction)
         {
             var rc = GetRegisteredType<T>();
 
@@ -146,7 +155,7 @@ namespace CharlieDb
                     $"WHERE {rc._IdProperty.ColumnName}=@{rc._IdProperty.Name}";
             }
 
-            using (var sqlCmd = new SqlCommand(rc.SqlUpdate, conn))
+            using (var sqlCmd = new SqlCommand(rc.SqlUpdate, conn, transaction))
             {
                 rc.Properties.ForEach(p => sqlCmd.Parameters.AddWithValue($"@{p.Name}", GetPropertyValue(p, data)));
                 sqlCmd.Parameters.AddWithValue($"@{rc._IdProperty.Name}", GetPropertyValue(rc._IdProperty, data));
@@ -156,7 +165,6 @@ namespace CharlieDb
 
         public IEnumerable<T> Get<T>(SqlConnection conn, string sqlWhereStatement, object parameters)
         {
-
             var rc = GetRegisteredType<T>();
 
             using (SqlCommand cmd = new SqlCommand($"SELECT * from {rc.SqlTableName} WHERE {sqlWhereStatement}", conn))
